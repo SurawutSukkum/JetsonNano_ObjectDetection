@@ -91,7 +91,7 @@ while(True):
                 cv2.putText(cv_img_bgr, "NG: "+str(round(prediction[idx]*100,2))+"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 100, 255),15,cv2.FILLED)
             elif idx == 2:
                 cv2.putText(cv_img_bgr, "No Object: "+str(round(prediction[idx]*100,2))+"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 100, 255),15,cv2.FILLED)
-
+     cv2.rectangle(cv_img_bgr,(int(cuda_img.width * crop_factor+460),int(cuda_img.height * crop_factor+240)),(int(cuda_img.width * crop_factor+600),int(cuda_img.height * crop_factor+340)),(100,255,100),5)
      cv2.imshow("Video Feed", cv_img_bgr)
      c = cv2.waitKey(1)
      if c == 27:
