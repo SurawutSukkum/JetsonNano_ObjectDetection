@@ -41,12 +41,20 @@ while(True):
 
      # determine the amount of border pixels (cropping around the center by half)
      crop_factor = 0.10
-     crop_border = ((1.0 - crop_factor) * 0.5 * cuda_img.width,
-		   (1.0 - crop_factor) * 0.5 * cuda_img.height)
+     crop_border = ((1.0 - crop_factor) * 0.5 * cuda_img.width,(1.0 - crop_factor) * 0.5 * cuda_img.height)
 
      # compute the ROI as (left, top, right, bottom)
      crop_roi = (crop_border[0], crop_border[1], cuda_img.width - crop_border[0], cuda_img.height - crop_border[1])
-
+     print ("left")
+     
+     print (crop_border[0])
+     print ("top")
+     print (crop_border[1])
+     print ("right")
+     print (cuda_img.width - crop_border[0])
+     print ("bottom")
+     print (cuda_img.height - crop_border[1])
+     #crop_roi = (int(cuda_img.width * crop_factor+460),int(cuda_img.height * crop_factor+240),int(cuda_img.width * crop_factor+420),int(cuda_img.height * crop_factor+240))
      # allocate the output image, with the cropped size
      imgOutput = jetson.utils.cudaAllocMapped(width=cuda_img.width * crop_factor,
                                          height=cuda_img.height * crop_factor,
@@ -79,19 +87,23 @@ while(True):
         dataObj[0] = normalized_image_array #get frist dimention 
         prediction =  list(model.predict(dataObj)[0])#change np.ndarray to list 
         idx = prediction.index(max(prediction)) #get index is maximun value
-
+        textColor=(0, 0, 0)
+        textColor1=(255, 0, 0)
         if  prediction[idx]*100 > 98:
             if idx == 0:
-                cv2.putText(cv_img_bgr, "OK: "+str(round(prediction[idx]*100,2)) +"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 255, 100),15,cv2.FILLED)
+                cv2.putText(cv_img_bgr, "PASS: "+str(round(prediction[idx]*100,2)) +"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 255, 100),15,cv2.FILLED)
+                textColor=(100, 255, 100) 
             elif idx == 2:
                 cv2.putText(cv_img_bgr, "No Object: "+str(round(prediction[idx]*100,2))+"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 100, 255),15,cv2.FILLED)
-
+                textColor=(0, 0, 0)
         if  prediction[idx]*100 > 50:
             if idx == 1:
-                cv2.putText(cv_img_bgr, "NG: "+str(round(prediction[idx]*100,2))+"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 100, 255),15,cv2.FILLED)
+                cv2.putText(cv_img_bgr, "FAIL: "+str(round(prediction[idx]*100,2))+"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 100, 255),15,cv2.FILLED)
+                textColor=(100, 100, 255) 
             elif idx == 2:
                 cv2.putText(cv_img_bgr, "No Object: "+str(round(prediction[idx]*100,2))+"%", (50, 100),cv2.FONT_HERSHEY_SIMPLEX, 4,(100, 100, 255),15,cv2.FILLED)
-     cv2.rectangle(cv_img_bgr,(int(cuda_img.width * crop_factor+460),int(cuda_img.height * crop_factor+240)),(int(cuda_img.width * crop_factor+600),int(cuda_img.height * crop_factor+330)),(100,255,100),5)
+                textColor=(0, 0, 0)
+     cv2.rectangle(cv_img_bgr,(int(crop_border[0]), int(crop_border[1])), (int(cuda_img.width - crop_border[0]), int(cuda_img.height - crop_border[1])),textColor,5)
      cv2.imshow("Video Feed", cv_img_bgr)
      c = cv2.waitKey(1)
      if c == 27:
