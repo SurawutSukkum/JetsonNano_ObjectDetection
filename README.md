@@ -1,3 +1,6 @@
+
+![alt text](https://github.com/SurawutSukkum/JetsonNano_ObjectDetection/blob/main/Screenshot%20from%202022-03-01%2016-12-54.png?raw=true)
+
 # JetsonNano_ObjectDetection
 
 installation
